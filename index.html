@@ -16,6 +16,7 @@
             background-color: #1a1a1a;
             color: #ffffff;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
@@ -85,7 +86,7 @@
             color: #cccccc;
         }
 
-        /* Секция работ - ОБНОВЛЕННАЯ без ограничений по краям */
+        /* Секция работ */
         .portfolio {
             padding: 100px 0;
             background-color: #1a1a1a;
@@ -96,6 +97,7 @@
             max-width: 1200px;
             margin: 0 auto;
             overflow: hidden;
+            touch-action: pan-y;
         }
 
         .portfolio-carousel {
@@ -129,6 +131,10 @@
             height: 0;
             padding-bottom: 150%;
             overflow: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         .image-before, .image-after {
@@ -138,6 +144,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         .image-after {
@@ -350,6 +360,10 @@
         }
 
         @media (max-width: 768px) {
+            .hero {
+                background-position: 30% center; /* Смещение фона влево на мобильных */
+            }
+            
             .hero-content h1 {
                 font-size: 2.5rem;
             }
@@ -375,6 +389,10 @@
         }
 
         @media (max-width: 480px) {
+            .hero {
+                background-position: 25% center; /* Еще больше смещение на маленьких экранах */
+            }
+            
             .hero-content h1 {
                 font-size: 2rem;
             }
@@ -393,6 +411,17 @@
             
             .comparison-container {
                 width: 280px;
+            }
+        }
+        
+        /* Дополнительные медиа-запросы для очень маленьких экранов */
+        @media (max-width: 380px) {
+            .comparison-container {
+                width: 260px;
+            }
+            
+            .hero {
+                background-position: 20% center;
             }
         }
     </style>
@@ -418,7 +447,7 @@
         </div>
     </section>
 
-    <!-- Секция работ - ОБНОВЛЕННАЯ без ограничений по краям -->
+    <!-- Секция работ -->
     <section class="portfolio">
         <div class="container">
             <h2 class="section-title">МОИ РАБОТЫ</h2>
@@ -500,8 +529,8 @@
                     <!-- Работа 7 -->
                     <div class="comparison-container" data-index="6">
                         <div class="image-container">
-                            <img class="image-before" src="img/22 исходник фотик.jpg" alt="До ретуши">
-                            <img class="image-after" src="img/23 готовое фотик.jpeg" alt="После ретуши">
+                            <img class="image-before" src="img/22 исходник фотик(2).jpg" alt="До ретуши">
+                            <img class="image-after" src="img/23 готовое фотик(2).jpeg" alt="После ретуши">
                             <div class="slider"></div>
                         </div>
                         <div class="work-info">
@@ -566,7 +595,7 @@
                         <img src="img/1762782183967-019a6e01-55b0-7cd6-b1a7-319cd6109ff4.png" alt="High-End Ретушь портретов">
                     </div>
                     <div class="skill-content">
-                        <h3 class="skill-title">HIHG-END РЕТУШЬ ПОРТРЕТОВ</h3>
+                        <h3 class="skill-title">HIGH-END РЕТУШЬ ПОРТРЕТОВ</h3>
                         <p class="skill-description">Мой приоритет — сохранение естественности и микрорельефа кожи. Достигается мастерским владением техниками DODGE & BURN и ЧАСТОТНОГО РАЗЛОЖЕНИЯ (FS). В работу входит аккуратная и незаметная ПЛАСТИКА, а также создание точных сложных масок для безупречного выделения волос, меха и прозрачных тканей.</p>
                     </div>
                 </div>
@@ -629,7 +658,7 @@
         </div>
     </section>
 
-<!-- Секция контактов -->
+    <!-- Секция контактов -->
     <section class="contact">
         <div class="container">
             <h2 class="section-title">Контакты</h2>
@@ -644,7 +673,7 @@
     <!-- Футер -->
     <footer>
         <div class="container">
-            <p>&copy; 2024 Портфолио ретушёра Алины Мякишевой. Все права защищены.</p>
+            <p>&copy; 2021 Портфолио ретушёра Алины Мякишевой. Все права защищены.</p>
         </div>
     </footer>
 
@@ -734,7 +763,7 @@
             observer.observe(aboutSection);
         }
         
-        // Функция для карусели работ без ограничений по краям
+        // Функция для карусели работ с поддержкой свайпа на мобильных
         function initCarousel() {
             const carousel = document.getElementById('portfolioCarousel');
             const indicatorsContainer = document.getElementById('carouselIndicators');
@@ -743,6 +772,11 @@
             
             let currentIndex = 0;
             const totalItems = items.length;
+            
+            // Переменные для обработки свайпа
+            let startX = 0;
+            let currentX = 0;
+            let isSwiping = false;
             
             // Создаем индикаторы
             function createIndicators() {
@@ -773,7 +807,7 @@
                 });
             }
             
-            // Центрируем карусель - УБРАНЫ ОГРАНИЧЕНИЯ ПО КРАЯМ
+            // Центрируем карусель
             function centerCarousel() {
                 const containerWidth = container.offsetWidth;
                 const itemWidth = items[0].offsetWidth + 30; // width + gap
@@ -804,6 +838,54 @@
                     currentIndex = index;
                     centerCarousel();
                 });
+            });
+            
+            // Обработчики свайпа для мобильных устройств
+            carousel.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isSwiping = true;
+                carousel.style.transition = 'none';
+            });
+            
+            carousel.addEventListener('touchmove', (e) => {
+                if (!isSwiping) return;
+                currentX = e.touches[0].clientX;
+                const diff = startX - currentX;
+                const containerWidth = container.offsetWidth;
+                const itemWidth = items[0].offsetWidth + 30;
+                
+                let scrollPosition = currentIndex * itemWidth;
+                
+                if (currentIndex === 0) {
+                    scrollPosition = 0;
+                } else if (currentIndex === totalItems - 1) {
+                    scrollPosition = (currentIndex * itemWidth) - (containerWidth - itemWidth);
+                } else {
+                    scrollPosition = (currentIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+                }
+                
+                carousel.style.transform = `translateX(-${scrollPosition + diff}px)`;
+            });
+            
+            carousel.addEventListener('touchend', () => {
+                if (!isSwiping) return;
+                isSwiping = false;
+                carousel.style.transition = 'transform 0.5s ease';
+                
+                const diff = startX - currentX;
+                const threshold = 50; // Минимальное расстояние свайпа для переключения
+                
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0 && currentIndex < totalItems - 1) {
+                        // Свайп влево - следующий слайд
+                        currentIndex++;
+                    } else if (diff < 0 && currentIndex > 0) {
+                        // Свайп вправо - предыдущий слайд
+                        currentIndex--;
+                    }
+                }
+                
+                centerCarousel();
             });
             
             // Инициализация
