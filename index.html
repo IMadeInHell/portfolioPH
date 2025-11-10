@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио ретушёра Алины Мякишевой</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Секция героя */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/IMG_6575_Алина протрет_сайт.jpg') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Секция "Обо мне" с анимацией появления */
+        .about {
+            padding: 100px 0;
+            background-color: #2d2d2d;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .about.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #ffffff;
+        }
+
+        .about-content {
+            display: flex;
+            justify-content: center;
+        }
+
+        .about-text {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #cccccc;
+        }
+
+        /* Секция работ - ОБНОВЛЕННАЯ без ограничений по краям */
+        .portfolio {
+            padding: 100px 0;
+            background-color: #1a1a1a;
+        }
+
+        .portfolio-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .portfolio-carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .comparison-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: #2d2d2d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #444;
+            flex: 0 0 auto;
+            width: 500px;
+            cursor: pointer;
+        }
+
+        .comparison-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 150%;
+            overflow: hidden;
+        }
+
+        .image-before, .image-after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-after {
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 3px;
+            height: 100%;
+            background-color: white;
+            transform: translateX(-50%);
+            cursor: col-resize;
+            z-index: 10;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .slider::after {
+            content: "⟷";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .work-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .work-title {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .work-description {
+            font-size: 0.95rem;
+            color: #aaaaaa;
+            line-height: 1.5;
+        }
+
+        /* Индикаторы для навигации */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #444;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .indicator.active {
+            background-color: #ffffff;
+        }
+
+        .indicator:hover {
+            background-color: #777;
+        }
+
+        /* Секция навыков */
+        .skills {
+            padding: 100px 0;
+            background-color: #2d2d2d;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .skill-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+            background-color: #3a3a3a;
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #555;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .skill-icon {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+        }
+
+        .skill-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .skill-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .skill-description {
+            font-size: 0.95rem;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* Секция контактов */
+        .contact {
+            padding: 100px 0;
+            background-color: #252525;
+        }
+
+        .contact-info {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: #cccccc;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .social-link {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-color: #444;
+            color: white;
+            border-radius: 50%;
+            line-height: 50px;
+            text-align: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            border: 1px solid #666;
+        }
+
+        .social-link:hover {
+            background-color: #555;
+            transform: translateY(-5px);
+        }
+
+        /* Футер */
+        footer {
+            background-color: #111;
+            color: #888;
+            text-align: center;
+            padding: 30px 0;
+            border-top: 1px solid #333;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .comparison-container {
+                width: 450px;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .comparison-container {
+                width: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .skill-item {
+                padding: 25px;
+            }
+            
+            .comparison-container {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .comparison-container {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .work-info {
+                padding: 15px;
+            }
+            
+            .work-title {
+                font-size: 1.1rem;
+            }
+            
+            .comparison-container {
+                width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Секция героя -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Портфолио ретушёра Мякишевой Алины</h1>
+            <p>ПРОФЕССИОНАЛЬНАЯ РЕТУШЬ ФОТОГРАФИЙ</p>
+        </div>
+    </section>
+
+    <!-- Секция "Обо мне" -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title">ОБО МНЕ</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Я профессиональный ретушер, уделяющий пристальное внимание деталям и стремлюсь к совершенству в любом проекте. Моя работа – это не просто обработка фото, а создание идеального изображения, которое превзойдёт ожидания клиента.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция работ - ОБНОВЛЕННАЯ без ограничений по краям -->
+    <section class="portfolio">
+        <div class="container">
+            <h2 class="section-title">МОИ РАБОТЫ</h2>
+            
+            <div class="portfolio-container">
+                <div class="portfolio-carousel" id="portfolioCarousel">
+                    <!-- Работа 1 -->
+                    <div class="comparison-container" data-index="0">
+                        <div class="image-container">
+                            <img class="image-before" src="img/6 исходник флакон.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/7 готовое флакон.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Предметная ретушь #1</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 2 -->
+                    <div class="comparison-container" data-index="1">
+                        <div class="image-container">
+                            <img class="image-before" src="img/исходник модельный тест.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/готовое модельный тест.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Женский портрет</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 3 -->
+                    <div class="comparison-container" data-index="2">
+                        <div class="image-container">
+                            <img class="image-before" src="img/исходник каталожка шампуни.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/готовое каталожка шампуни.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Предметная ретушь #2</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 4 -->
+                    <div class="comparison-container" data-index="3">
+                        <div class="image-container">
+                            <img class="image-before" src="img/исходник портрет 1 (2).jpg" alt="До ретуши">
+                            <img class="image-after" src="img/готовое портрет 1.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Портретная ретушь</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 5 -->
+                    <div class="comparison-container" data-index="4">
+                        <div class="image-container">
+                            <img class="image-before" src="img/16 исходник духи жёлтые.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/17 готовое духи жёлтые.jpeg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Предметная ретушь #3</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 6 -->
+                    <div class="comparison-container" data-index="5">
+                        <div class="image-container">
+                            <img class="image-before" src="img/исходник.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/готовое.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Ретушь глубокого акне</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 7 -->
+                    <div class="comparison-container" data-index="6">
+                        <div class="image-container">
+                            <img class="image-before" src="img/22 исходник фотик.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/23 готовое фотик.jpeg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Предметная ретушь #4</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 8 -->
+                    <div class="comparison-container" data-index="7">
+                        <div class="image-container">
+                            <img class="image-before" src="img/исходник спектакль.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/готовое спектакль.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Репортажная ретушь</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Работа 9 -->
+                    <div class="comparison-container" data-index="8">
+                        <div class="image-container">
+                            <img class="image-before" src="img/8 исходника коробка.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/9 готовое коробка.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Предметная ретушь #5</div>
+                        </div>
+                    </div>
+      
+                    <!-- Работа 10 -->
+                    <div class="comparison-container" data-index="9">
+                        <div class="image-container">
+                            <img class="image-before" src="img/исходник Плёнка.jpg" alt="До ретуши">
+                            <img class="image-after" src="img/готовое Плёнка.jpg" alt="После ретуши">
+                            <div class="slider"></div>
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">Рестоврация плёночной фотографии</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Индикаторы для навигации -->
+                <div class="carousel-indicators" id="carouselIndicators">
+                    <!-- Индикаторы будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция навыков -->
+    <section class="skills">
+        <div class="container">
+            <h2 class="section-title">МОИ НАВЫКИ</h2>
+            
+            <div class="skills-grid">
+                <!-- Навык 1 -->
+                <div class="skill-item">
+                    <div class="skill-icon">
+                        <img src="img/1762782183967-019a6e01-55b0-7cd6-b1a7-319cd6109ff4.png" alt="High-End Ретушь портретов">
+                    </div>
+                    <div class="skill-content">
+                        <h3 class="skill-title">HIHG-END РЕТУШЬ ПОРТРЕТОВ</h3>
+                        <p class="skill-description">Мой приоритет — сохранение естественности и микрорельефа кожи. Достигается мастерским владением техниками DODGE & BURN и ЧАСТОТНОГО РАЗЛОЖЕНИЯ (FS). В работу входит аккуратная и незаметная ПЛАСТИКА, а также создание точных сложных масок для безупречного выделения волос, меха и прозрачных тканей.</p>
+                    </div>
+                </div>
+                
+                <!-- Навык 2 -->
+                <div class="skill-item">
+                    <div class="skill-icon">
+                        <img src="img/1762783408528-019a6e13-d150-7df2-8aea-8eb736b48631.png" alt="Коммерческая ретушь">
+                    </div>
+                    <div class="skill-content">
+                        <h3 class="skill-title">КОММЕРЧЕСКАЯ И ПРОМЫШЛЕННАЯ РЕТУШЬ</h3>
+                        <p class="skill-description">High-End Product Cleanup — безупречная очистка поверхностей от микродефектов, пыли и отпечатков для каталожной съемки. Профессионально работаю со сложными отражающими поверхностями (металл, стекло, ювелирные изделия), устраняя блики. Обладаю навыками ФОКУС-СТЕКИНГА и КОМПОЗИТИНГА.</p>
+                    </div>
+                </div>
+                
+                <!-- Навык 3 -->
+                <div class="skill-item">
+                    <div class="skill-icon">
+                        <img src="img/1762783796332-019a6e19-ffdd-7ff0-9114-64e0577c4cc6.png" alt="Профессиональный подход">
+                    </div>
+                    <div class="skill-content">
+                        <h3 class="skill-title">ПРОФЕССИОНАЛИЗМ И КОММУНИКАЦИЯ</h3>
+                        <p class="skill-description">Я гарантирую высокий уровень профессиональной ответственности, основанный НА СТРОГОМ СОБЛЮДЕНИИ ДЕДЛАЙНОВ и полной конфиденциальности. Мой рабочий процесс выстроен на эффективной обратной связи: умею четко следовать ТЕХНИЧЕСКОМУ ЗАДАНИЮ (ТЗ).</p>
+                    </div>
+                </div>
+                
+                <!-- Навык 4 -->
+                <div class="skill-item">
+                    <div class="skill-icon">
+                        <img src="img/1762783971416-019a6e1c-a54c-72b9-956d-e041f14e91f0.png" alt="Автоматизация процесса">
+                    </div>
+                    <div class="skill-content">
+                        <h3 class="skill-title">АВТОМАТИЗАЦИЯ РАБОЧЕГО ПРОЦЕССА</h3>
+                        <p class="skill-description">Для оптимизации и ускорения работы я активно интегрирую современные AI-ИНСТРУМЕНТЫ, используя искусственный интеллект для быстрого выделения сложных объектов и интеллектуального улучшения разрешения без потери качества.</p>
+                    </div>
+                </div>
+                
+                <!-- Навык 5 -->
+                <div class="skill-item">
+                    <div class="skill-icon">
+                        <img src="img/1762784319114-019a6e21-a06e-7f33-9df1-9d7b33ba879c.png" alt="Экспертиза в цветокоррекции">
+                    </div>
+                    <div class="skill-content">
+                        <h3 class="skill-title">ЦВЕТОКОРРЕКЦИЯ</h3>
+                        <p class="skill-description">Я гарантирую цветовую консистентность (Color Matching) по всей серии изображений. Это включает точное обеспечение идентичности цвета продукта и строгое соответствие фирменному стилю клиента, включая работу с Pantone-кодами и брендбуком.</p>
+                    </div>
+                </div>
+                
+                <!-- Навык 6 -->
+                <div class="skill-item">
+                    <div class="skill-icon">
+                        <img src="img/1762784445418-019a6e23-e3dd-7f6e-a545-bcd02c7058ca.png" alt="Подготовка к печати">
+                    </div>
+                    <div class="skill-content">
+                        <h3 class="skill-title">ПОДГОТОВКА К ПЕЧАТИ</h3>
+                        <p class="skill-description">Я обеспечиваю полную готовность изображений к печати (для каталогов и журналов). Мои навыки включают точную конвертацию в CMYK (с учетом GCR/UCR), настройку ТРЕППИНГА и контроль ВЫЛЕТОВ. Я также работаю с разрешением и детализацией, оптимизируя изображения для любых конечных носителей.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Секция контактов -->
+    <section class="contact">
+        <div class="container">
+            <h2 class="section-title">Контакты</h2>
+            <div class="contact-info">
+                <p>Telegram: <a href="https://t.me/I_Made_In_Hell" style="color: #F6B26B; text-decoration: none;">@I_Made_In_Hell</a></p>
+                <p>Телефон: +7 (915) 167-60-03</p>
+                <p>Email: Malinochka-05@yandex.ru</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Портфолио ретушёра Алины Мякишевой. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Функция для работы слайдера сравнения "до/после"
+        function initComparisonSliders() {
+            const sliders = document.querySelectorAll('.slider');
+            
+            sliders.forEach(slider => {
+                const container = slider.closest('.image-container');
+                const beforeImg = container.querySelector('.image-before');
+                const afterImg = container.querySelector('.image-after');
+                let isDragging = false;
+                
+                // Устанавливаем начальную позицию слайдера
+                updateSliderPosition(container, 50);
+                
+                // Обработчики событий для мыши
+                slider.addEventListener('mousedown', startDrag);
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                
+                // Обработчики событий для касаний
+                slider.addEventListener('touchstart', startDrag);
+                document.addEventListener('touchmove', drag);
+                document.addEventListener('touchend', stopDrag);
+                
+                function startDrag(e) {
+                    e.preventDefault();
+                    isDragging = true;
+                    container.style.cursor = 'col-resize';
+                }
+                
+                function drag(e) {
+                    if (!isDragging) return;
+                    
+                    e.preventDefault();
+                    const containerRect = container.getBoundingClientRect();
+                    let x;
+                    
+                    if (e.type === 'mousemove') {
+                        x = e.clientX;
+                    } else if (e.type === 'touchmove') {
+                        x = e.touches[0].clientX;
+                    }
+                    
+                    const relativeX = x - containerRect.left;
+                    const percentage = (relativeX / containerRect.width) * 100;
+                    
+                    // Ограничиваем процент в пределах 0-100
+                    const clampedPercentage = Math.max(0, Math.min(100, percentage));
+                    
+                    updateSliderPosition(container, clampedPercentage);
+                }
+                
+                function stopDrag() {
+                    isDragging = false;
+                    document.querySelectorAll('.image-container').forEach(container => {
+                        container.style.cursor = 'default';
+                    });
+                }
+            });
+        }
+        
+        function updateSliderPosition(container, percentage) {
+            const slider = container.querySelector('.slider');
+            const afterImg = container.querySelector('.image-after');
+            
+            // Обновляем позицию слайдера
+            slider.style.left = `${percentage}%`;
+            
+            // Обновляем область видимости изображения "после"
+            afterImg.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+        }
+        
+        // Функция для анимации появления секции "Обо мне"
+        function initScrollAnimation() {
+            const aboutSection = document.querySelector('.about');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        aboutSection.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            observer.observe(aboutSection);
+        }
+        
+        // Функция для карусели работ без ограничений по краям
+        function initCarousel() {
+            const carousel = document.getElementById('portfolioCarousel');
+            const indicatorsContainer = document.getElementById('carouselIndicators');
+            const items = document.querySelectorAll('.comparison-container');
+            const container = document.querySelector('.portfolio-container');
+            
+            let currentIndex = 0;
+            const totalItems = items.length;
+            
+            // Создаем индикаторы
+            function createIndicators() {
+                indicatorsContainer.innerHTML = '';
+                for (let i = 0; i < totalItems; i++) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator';
+                    if (i === currentIndex) {
+                        indicator.classList.add('active');
+                    }
+                    indicator.addEventListener('click', () => {
+                        currentIndex = i;
+                        centerCarousel();
+                    });
+                    indicatorsContainer.appendChild(indicator);
+                }
+            }
+            
+            // Обновляем активный индикатор
+            function updateIndicators() {
+                const indicators = document.querySelectorAll('.indicator');
+                indicators.forEach((indicator, index) => {
+                    if (index === currentIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Центрируем карусель - УБРАНЫ ОГРАНИЧЕНИЯ ПО КРАЯМ
+            function centerCarousel() {
+                const containerWidth = container.offsetWidth;
+                const itemWidth = items[0].offsetWidth + 30; // width + gap
+                
+                // Расчет позиции для центрирования текущего элемента
+                let scrollPosition = currentIndex * itemWidth;
+                
+                // Для первого элемента - центрируем с правым соседом
+                if (currentIndex === 0) {
+                    scrollPosition = 0;
+                } 
+                // Для последнего элемента - центрируем с левым соседом
+                else if (currentIndex === totalItems - 1) {
+                    scrollPosition = (currentIndex * itemWidth) - (containerWidth - itemWidth);
+                }
+                // Для остальных - стандартное центрирование
+                else {
+                    scrollPosition = (currentIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+                }
+                
+                carousel.style.transform = `translateX(-${scrollPosition}px)`;
+                updateIndicators();
+            }
+            
+            // Обработчики клика на элементы
+            items.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    currentIndex = index;
+                    centerCarousel();
+                });
+            });
+            
+            // Инициализация
+            createIndicators();
+            centerCarousel();
+            
+            // Обработка изменения размера окна
+            window.addEventListener('resize', centerCarousel);
+        }
+        
+        // Инициализация всех функций после загрузки страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            initComparisonSliders();
+            initScrollAnimation();
+            initCarousel();
+        });
+    </script>
+</body>
+</html>
